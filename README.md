@@ -37,9 +37,15 @@ This is how you would do this all once.
 ```py
 import VtoRGB
 
+WIDTH = 300     # optional
+HEIGHT = 300    # optional
+
 VtoRGB.vtobin(
-        "/your/absolute/path/to/video.mp4"          # Video
-        , "/your/absolute/directory/to/workaround/"  # Where bmps stored
-        , "/your/absolute/path/to/output/file"      # output file path
+        "/your/absolute/path/to/video.mp4"          
+        , "/your/absolute/directory/to/workaround/"  
+        , "/your/absolute/path/to/output/file"      
+
+        # Down here is optional part
+        , WIDTH, HEIGHT
         )
 ```

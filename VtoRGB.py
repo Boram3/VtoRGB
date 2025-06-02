@@ -19,8 +19,10 @@ def vtobmps(video_path : str, output_dir : str, w : int, h : int) -> int:
     command = [
         'ffmpeg',
         '-i', video_path,               # Input video
-        '-vf', f'scale={w}:{h},format=rgb24',          # Ensure RGB format
-        "fps=1", 
+        '-vf',
+        f'scale={w}:{h},'
+        'format=rgb24,'
+        'fps=1',
         f'{output_dir}/fb%d.bmp'      # Output: [fp{NUMBER}.bmp]
     ]
     
@@ -33,45 +35,45 @@ def vtobmps(video_path : str, output_dir : str, w : int, h : int) -> int:
 
     return 0
 
-def bmptobin(dir_bmps: str, dir_out: str, fc : int, bmphsz : int = 54) -> int:
+def bmptobin(dir_bmps: str, path_out: str, bmphsz : int = 54) -> int:
     """
     # Bmp to Binary
     Convert frames to binaries.
     """
 
-    if fc <= 0:
-        print("Bad value")
-        return 2
 
     frames = []
 
 
     for item in os.listdir(dir_bmps):
-        item_full = f"{dir_bmps}/{item}"
         if item.startswith("fb") and item.endswith(".bmp"):
-            frames.append(item_full)
+            frames.append(item)
             pass
+        pass
 
-    frames_len = len(frames) - fc + 1
+    frames.sort(key=lambda x : int(x[2::].split(".bmp")[0]))
+    frames_len = len(frames)
 
-    if frames_len <= 0:
-        print("Too few")
-        return 1
+    with open(f"{path_out}", "wb") as _out:
+        for i in range(frames_len):
+            print(f"Operation number {i}")
+            print(f"\tOpening file: {frames[i]}")
+            with open(f"{dir_bmps}/{frames[i]}", "rb") as _readf:
+                _out.write(_readf.read()[bmphsz::])
+                pass
+            pass
+        pass
 
-    for i in range(frames_len):
-        with open(f"{dir_out}/b{i}.seq", "wb") as _out:
-            for j in range(fc):
-                with open(frames[i + j], "rb") as _readf:
-                    _out.write(_readf.read()[bmphsz::])
+    print("over")
 
     return 0
 
-def vtobin(vd_path : str, dir_workaround : str, dir_out : str, w: int, h : int, fc : int) -> tuple[int, int]:
+def vtobin(vd_path : str, dir_workaround : str, path_out : str, w: int = 640, h: int = 480) -> tuple[int, int]:
     a = vtobmps(vd_path, dir_workaround, w, h);
     if a != 0:
         return (a, -1)
 
-    b = bmptobin(dir_workaround, dir_out, fc)
+    b = bmptobin(dir_workaround, path_out)
 
     if b != 0:
         return (a, b)

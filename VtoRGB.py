@@ -21,8 +21,7 @@ def vtobmps(video_path : str, output_dir : str, w : int, h : int) -> int:
         '-i', video_path,               # Input video
         '-vf',
         f'scale={w}:{h},'
-        'format=rgb24,'
-        'fps=1',
+        'format=rgb24',
         f'{output_dir}/fb%d.bmp'      # Output: [fp{NUMBER}.bmp]
     ]
     
